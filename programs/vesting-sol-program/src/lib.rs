@@ -1,16 +1,21 @@
+pub mod constants;
+pub mod error;
+pub mod instructions;
+pub mod state;
+
 use anchor_lang::prelude::*;
 
-declare_id!("EXAhN7UrEffmdapcPtKodBg5FwcwYRLBQLTcBmKiCm4d");
+pub use constants::*;
+pub use instructions::*;
+pub use state::*;
+
+declare_id!("E9W68mi2czVLckqc6EpNG6sdQnVqLVhtvKig9XkEzeGk");
 
 #[program]
 pub mod vesting_sol_program {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        msg!("Greetings from: {:?}", ctx.program_id);
-        Ok(())
+        initialize::handler(ctx)
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}
