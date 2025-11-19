@@ -1,9 +1,22 @@
 use anchor_lang::prelude::*;
+use crate::state::Vesting;
+use crate::error::ErrorCode;
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct Initialize<'info> {
+    #[account(init, payer = owner, space = Vesting::INIT_SPACE)]
+    pub vesting: Account<'info, Vesting>,
+    #[account(mut)]
+    pub owner: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
 
-pub fn handler(ctx: Context<Initialize>) -> Result<()> {
-    msg!("Greetings from: {:?}", ctx.program_id);
+pub fn handler(ctx: Context<Initialize>, creation_fee: u64) -> Result<()> {
+    require!(creation_fee > 0, ErrorCode::InvalidAmount);
+
+    let vesting = &mut ctx.accounts.vesting;
+    vesting.owner = ctx.accounts.owner.key();
+    vesting.creation_fee = creation_fee;
+
     Ok(())
 }

@@ -9,3 +9,5 @@ I worked with vestings and ICOs so much, and boticed that there is no a lot of g
 - User set as a receiver is able to claim token if some of them are unlocked alreadt, if not transaction will be reverted.
 - It is possible to set unlock amount or percentage per period.
 - It is possible to make vesting for group of users via merkle proofs.
+- User pay creation fee to create vesting.
+- 0.01% of vested tokens are sent to treasury wallet.
