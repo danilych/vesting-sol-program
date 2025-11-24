@@ -14,4 +14,8 @@ pub enum ErrorCode {
     InvalidPeriodsConfiguration,
     #[msg("Zero address")]
     ZeroAddress,
+    #[msg("Insufficient Balance")]
+    InsufficientBalance,
+    #[msg("Invalid vesting owner")]
+    InvalidVestingOwner,
 }
