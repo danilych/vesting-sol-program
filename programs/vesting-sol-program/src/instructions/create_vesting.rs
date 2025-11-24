@@ -15,7 +15,7 @@ pub struct CreateVesting<'info> {
     pub vesting_record: Account<'info, VestingRecord>,
     pub vesting: Account<'info, Vesting>,
     /// CHECK: we are checking that only treasury can receive creation fees.
-    #[account(mut, constraint = treasury.key() == vesting.owner)]
+    #[account(mut, constraint = treasury.key() == vesting.treasury)]
     pub treasury: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }

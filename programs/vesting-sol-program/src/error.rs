@@ -16,6 +16,4 @@ pub enum ErrorCode {
     ZeroAddress,
     #[msg("Insufficient Balance")]
     InsufficientBalance,
-    #[msg("Invalid vesting owner")]
-    InvalidVestingOwner,
 }
