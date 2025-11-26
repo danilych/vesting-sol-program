@@ -941,6 +941,269 @@ describe("vesting-sol-program", async () => {
     assert.strictEqual(record1.periods.toString(), "100", "First record should have 100 periods");
     assert.strictEqual(record2.periods.toString(), "1", "Second record should have 1 period");
   });
+
+  describe("Admin Functions", () => {
+    it("Owner can update creation fee", async () => {
+      const oldFee = CREATION_FEE;
+      const newFee = new anchor.BN(2_000_000); // 0.002 SOL
+
+      await program.methods
+        .updateCreationFee(newFee)
+        .accounts({
+          vesting: vestingAccountAlice.publicKey,
+          owner: alice.publicKey,
+        })
+        .signers([alice])
+        .rpc({ commitment: "confirmed" });
+
+      const vestingData = await program.account.vesting.fetch(
+        vestingAccountAlice.publicKey
+      );
+      assert.strictEqual(
+        vestingData.creationFee.toString(),
+        newFee.toString(),
+        "Creation fee should be updated"
+      );
+
+      await program.methods
+        .updateCreationFee(oldFee)
+        .accounts({
+          vesting: vestingAccountAlice.publicKey,
+          owner: alice.publicKey,
+        })
+        .signers([alice])
+        .rpc({ commitment: "confirmed" });
+    });
+
+    it("Owner can update treasury", async () => {
+      const newTreasury = anchor.web3.Keypair.generate();
+
+      await program.methods
+        .updateTreasury(newTreasury.publicKey)
+        .accounts({
+          vesting: vestingAccountAlice.publicKey,
+          owner: alice.publicKey,
+        })
+        .signers([alice])
+        .rpc({ commitment: "confirmed" });
+
+      const vestingData = await program.account.vesting.fetch(
+        vestingAccountAlice.publicKey
+      );
+      assert.strictEqual(
+        vestingData.treasury.toString(),
+        newTreasury.publicKey.toString(),
+        "Treasury should be updated"
+      );
+
+      await program.methods
+        .updateTreasury(treasury.publicKey)
+        .accounts({
+          vesting: vestingAccountAlice.publicKey,
+          owner: alice.publicKey,
+        })
+        .signers([alice])
+        .rpc({ commitment: "confirmed" });
+    });
+
+    it("Owner can transfer ownership", async () => {
+      const newOwner = anchor.web3.Keypair.generate();
+
+      await program.methods
+        .transferOwnership(newOwner.publicKey)
+        .accounts({
+          vesting: vestingAccountAlice.publicKey,
+          owner: alice.publicKey,
+        })
+        .signers([alice])
+        .rpc({ commitment: "confirmed" });
+
+      const vestingData = await program.account.vesting.fetch(
+        vestingAccountAlice.publicKey
+      );
+      assert.strictEqual(
+        vestingData.owner.toString(),
+        newOwner.publicKey.toString(),
+        "Owner should be updated"
+      );
+
+      await program.methods
+        .transferOwnership(alice.publicKey)
+        .accounts({
+          vesting: vestingAccountAlice.publicKey,
+          owner: newOwner.publicKey,
+        })
+        .signers([newOwner])
+        .rpc({ commitment: "confirmed" });
+    });
+
+    it("Non-owner cannot update creation fee", async () => {
+      const newFee = new anchor.BN(3_000_000);
+
+      let flag = "This should fail";
+      try {
+        await program.methods
+          .updateCreationFee(newFee)
+          .accounts({
+            vesting: vestingAccountAlice.publicKey,
+            owner: bob.publicKey,
+          })
+          .signers([bob])
+          .rpc({ commitment: "confirmed" });
+      } catch (error) {
+        flag = "Failed";
+        assert.isTrue(
+          error.toString().includes("ConstraintRaw") || 
+          error.toString().includes("Error") ||
+          error.toString().includes("CustomError"),
+          "Should fail with constraint error"
+        );
+      }
+      assert.strictEqual(flag, "Failed", "Non-owner should not be able to update fee");
+    });
+
+    it("Non-owner cannot update treasury", async () => {
+      const newTreasury = anchor.web3.Keypair.generate();
+
+      let flag = "This should fail";
+      try {
+        await program.methods
+          .updateTreasury(newTreasury.publicKey)
+          .accounts({
+            vesting: vestingAccountAlice.publicKey,
+            owner: bob.publicKey,
+          })
+          .signers([bob])
+          .rpc({ commitment: "confirmed" });
+      } catch (error) {
+        flag = "Failed";
+        assert.isTrue(
+          error.toString().includes("ConstraintRaw") || 
+          error.toString().includes("Error") ||
+          error.toString().includes("CustomError"),
+          "Should fail with constraint error"
+        );
+      }
+      assert.strictEqual(flag, "Failed", "Non-owner should not be able to update treasury");
+    });
+
+    it("Non-owner cannot transfer ownership", async () => {
+      const newOwner = anchor.web3.Keypair.generate();
+
+      let flag = "This should fail";
+      try {
+        await program.methods
+          .transferOwnership(newOwner.publicKey)
+          .accounts({
+            vesting: vestingAccountAlice.publicKey,
+            owner: bob.publicKey,
+          })
+          .signers([bob])
+          .rpc({ commitment: "confirmed" });
+      } catch (error) {
+        flag = "Failed";
+        assert.isTrue(
+          error.toString().includes("ConstraintRaw") || 
+          error.toString().includes("Error") ||
+          error.toString().includes("CustomError"),
+          "Should fail with constraint error"
+        );
+      }
+      assert.strictEqual(flag, "Failed", "Non-owner should not be able to transfer ownership");
+    });
+
+    it("Cannot update treasury to zero address", async () => {
+      let flag = "This should fail";
+      try {
+        await program.methods
+          .updateTreasury(anchor.web3.PublicKey.default)
+          .accounts({
+            vesting: vestingAccountAlice.publicKey,
+            owner: alice.publicKey,
+          })
+          .signers([alice])
+          .rpc({ commitment: "confirmed" });
+      } catch (error) {
+        flag = "Failed";
+        const err = anchor.AnchorError.parse(error.logs);
+        assert.strictEqual(
+          err.error.errorCode.code,
+          "ZeroAddress",
+          "Should fail with ZeroAddress error"
+        );
+      }
+      assert.strictEqual(flag, "Failed", "Should not allow zero address for treasury");
+    });
+
+    it("Cannot transfer ownership to zero address", async () => {
+      let flag = "This should fail";
+      try {
+        await program.methods
+          .transferOwnership(anchor.web3.PublicKey.default)
+          .accounts({
+            vesting: vestingAccountAlice.publicKey,
+            owner: alice.publicKey,
+          })
+          .signers([alice])
+          .rpc({ commitment: "confirmed" });
+      } catch (error) {
+        flag = "Failed";
+        const err = anchor.AnchorError.parse(error.logs);
+        assert.strictEqual(
+          err.error.errorCode.code,
+          "ZeroAddress",
+          "Should fail with ZeroAddress error"
+        );
+      }
+      assert.strictEqual(flag, "Failed", "Should not allow zero address for new owner");
+    });
+
+    it("Updated creation fee applies to new vesting records", async () => {
+      const newFee = new anchor.BN(500_000); // 0.0005 SOL
+
+      await program.methods
+        .updateCreationFee(newFee)
+        .accounts({
+          vesting: vestingAccountBob.publicKey,
+          owner: bob.publicKey,
+        })
+        .signers([bob])
+        .rpc({ commitment: "confirmed" });
+
+      const vestingRecordTest = anchor.web3.Keypair.generate();
+      const vestingStoragePDA = getVestingStoragePDA(vestingRecordTest.publicKey);
+      const currentTime = Math.floor(Date.now() / 1000);
+
+      const treasuryBalanceBefore = await provider.connection.getBalance(treasury.publicKey);
+
+      await program.methods
+        .createVesting(
+          new anchor.BN(10_000_000),
+          new anchor.BN(currentTime + 60),
+          new anchor.BN(currentTime + 10060),
+          new anchor.BN(10),
+          new anchor.BN(1000),
+          new anchor.BN(1_000_000)
+        )
+        .accounts({
+          owner: bob.publicKey,
+          vestingRecord: vestingRecordTest.publicKey,
+          vestingStorage: vestingStoragePDA,
+          vesting: vestingAccountBob.publicKey,
+          treasury: treasury.publicKey,
+        })
+        .signers([bob, vestingRecordTest])
+        .rpc({ commitment: "confirmed" });
+
+      const treasuryBalanceAfter = await provider.connection.getBalance(treasury.publicKey);
+      const feeReceived = treasuryBalanceAfter - treasuryBalanceBefore;
+
+      assert.isTrue(
+        feeReceived >= newFee.toNumber(),
+        "Treasury should receive the updated creation fee"
+      );
+    });
+  });
 });
 
 async function airdrop(

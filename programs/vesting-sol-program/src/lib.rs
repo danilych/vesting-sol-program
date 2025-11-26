@@ -26,4 +26,16 @@ pub mod vesting_sol_program {
     pub fn claim(ctx: Context<Claim>) -> Result<()> {
         claim::handler(ctx)
     }
+
+    pub fn update_creation_fee(ctx: Context<UpdateCreationFee>, new_fee: u64) -> Result<()> {
+        update_vesting::update_creation_fee_handler(ctx, new_fee)
+    }
+
+    pub fn update_treasury(ctx: Context<UpdateTreasury>, new_treasury: Pubkey) -> Result<()> {
+        update_vesting::update_treasury_handler(ctx, new_treasury)
+    }
+
+    pub fn transfer_ownership(ctx: Context<TransferOwnership>, new_owner: Pubkey) -> Result<()> {
+        update_vesting::transfer_ownership_handler(ctx, new_owner)
+    }
 }
