@@ -1,12 +1,12 @@
 import { useSolana } from '@/components/solana/use-solana'
 import { useQuery } from '@tanstack/react-query'
-import { VESTINGSOL_PROGRAM_ADDRESS } from '@project/anchor'
+import { VESTING_SOL_PROGRAM_PROGRAM_ADDRESS } from '@project/anchor'
 
 export function useGetProgramAccountQuery() {
   const { client, cluster } = useSolana()
 
   return useQuery({
     queryKey: ['get-program-account', { cluster }],
-    queryFn: () => client.rpc.getAccountInfo(VESTINGSOL_PROGRAM_ADDRESS).send(),
+    queryFn: () => client.rpc.getAccountInfo(VESTING_SOL_PROGRAM_PROGRAM_ADDRESS).send(),
   })
 }

@@ -45,6 +45,7 @@
     "@wallet-ui/tailwind": "2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "gill": "0.11.0",
     "jotai": "^2.14.0",
     "lucide-react": "^0.544.0",

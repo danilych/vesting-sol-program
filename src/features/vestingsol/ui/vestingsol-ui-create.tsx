@@ -1,9 +1,8 @@
-import { UiWalletAccount } from '@wallet-ui/react'
 import { Button } from '@/components/ui/button'
 import { useGreetMutation } from '../data-access/use-greet-mutation'
 
-export function VestingsolUiCreate({ account }: { account: UiWalletAccount }) {
-  const greetMutation = useGreetMutation({ account })
+export function VestingsolUiCreate() {
+  const greetMutation = useGreetMutation()
 
   return (
     <Button onClick={() => greetMutation.mutateAsync()} disabled={greetMutation.isPending}>

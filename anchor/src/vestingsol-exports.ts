@@ -1,7 +1,7 @@
 // Here we export some useful types and functions for interacting with the Anchor program.
-import VestingsolIDL from '../target/idl/vestingsol.json'
+import VestingSolProgramIDL from '../target/idl/vesting_sol_program.json'
 
 // Re-export the generated IDL and type
-export { VestingsolIDL }
+export { VestingSolProgramIDL }
 
 export * from './client/js'

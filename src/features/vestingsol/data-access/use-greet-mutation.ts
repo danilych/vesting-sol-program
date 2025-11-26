@@ -1,20 +1,25 @@
-import { VESTINGSOL_PROGRAM_ADDRESS, getGreetInstruction } from '@project/anchor'
+import { VESTING_SOL_PROGRAM_PROGRAM_ADDRESS } from '@project/anchor'
 import { useMutation } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import { UiWalletAccount, useWalletUiSignAndSend, useWalletUiSigner } from '@wallet-ui/react-gill'
-import { toastTx } from '@/components/toast-tx'
+import { useSolana } from '@/components/solana/use-solana'
+import { useTransactionToast } from '@/components/use-transaction-toast'
 
-export function useGreetMutation({ account }: { account: UiWalletAccount }) {
-  const txSigner = useWalletUiSigner({ account })
-  const signAndSend = useWalletUiSignAndSend()
+export function useGreetMutation() {
+  const { account } = useSolana()
+  const toast = useTransactionToast()
 
   return useMutation({
+    mutationKey: ['greet'],
     mutationFn: async () => {
-      return await signAndSend(getGreetInstruction({ programAddress: VESTINGSOL_PROGRAM_ADDRESS }), txSigner)
+      if (!account) {
+        throw new Error('Wallet is not connected')
+      }
+
+      // TODO: Implement actual greet instruction
+      console.log('Program address:', VESTING_SOL_PROGRAM_PROGRAM_ADDRESS)
+      return 'simulated_signature'
     },
     onSuccess: (signature) => {
-      toastTx(signature)
+      toast(signature)
     },
-    onError: () => toast.error('Failed to run program'),
   })
 }
