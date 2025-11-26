@@ -1,0 +1,463 @@
+{
+  "address": "E9W68mi2czVLckqc6EpNG6sdQnVqLVhtvKig9XkEzeGk",
+  "metadata": {
+    "name": "vesting_sol_program",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "claim",
+      "discriminator": [
+        62,
+        198,
+        214,
+        193,
+        213,
+        159,
+        108,
+        210
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vesting_record",
+          "writable": true
+        },
+        {
+          "name": "vesting_storage",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  101,
+                  115,
+                  116,
+                  105,
+                  110,
+                  103,
+                  95,
+                  115,
+                  116,
+                  111,
+                  114,
+                  97,
+                  103,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vesting_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_vesting",
+      "discriminator": [
+        135,
+        184,
+        171,
+        156,
+        197,
+        162,
+        246,
+        44
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vesting_record",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vesting_storage",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  101,
+                  115,
+                  116,
+                  105,
+                  110,
+                  103,
+                  95,
+                  115,
+                  116,
+                  111,
+                  114,
+                  97,
+                  103,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vesting_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vesting"
+        },
+        {
+          "name": "treasury",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "start_time",
+          "type": "u64"
+        },
+        {
+          "name": "end_time",
+          "type": "u64"
+        },
+        {
+          "name": "periods",
+          "type": "u64"
+        },
+        {
+          "name": "period_duration",
+          "type": "u64"
+        },
+        {
+          "name": "amount_per_period",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "vesting",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "treasury"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "creation_fee",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "transfer_ownership",
+      "discriminator": [
+        65,
+        177,
+        215,
+        73,
+        53,
+        45,
+        99,
+        47
+      ],
+      "accounts": [
+        {
+          "name": "vesting",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_owner",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "update_creation_fee",
+      "discriminator": [
+        61,
+        2,
+        124,
+        84,
+        182,
+        199,
+        38,
+        134
+      ],
+      "accounts": [
+        {
+          "name": "vesting",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_fee",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_treasury",
+      "discriminator": [
+        60,
+        16,
+        243,
+        66,
+        96,
+        59,
+        254,
+        131
+      ],
+      "accounts": [
+        {
+          "name": "vesting",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_treasury",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Vesting",
+      "discriminator": [
+        100,
+        149,
+        66,
+        138,
+        95,
+        200,
+        128,
+        241
+      ]
+    },
+    {
+      "name": "VestingRecord",
+      "discriminator": [
+        106,
+        243,
+        221,
+        205,
+        230,
+        126,
+        85,
+        83
+      ]
+    },
+    {
+      "name": "VestingStorage",
+      "discriminator": [
+        116,
+        80,
+        116,
+        23,
+        0,
+        146,
+        130,
+        240
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CustomError",
+      "msg": "Custom error message"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidStartTimestamp",
+      "msg": "Invalid start timestamp"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidEndTimestamp",
+      "msg": "Invalid end timestamp"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidPeriodsConfiguration",
+      "msg": "Invalid periods configuration"
+    },
+    {
+      "code": 6005,
+      "name": "ZeroAddress",
+      "msg": "Zero address"
+    },
+    {
+      "code": 6006,
+      "name": "InsufficientBalance",
+      "msg": "Insufficient Balance"
+    }
+  ],
+  "types": [
+    {
+      "name": "Vesting",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "creation_fee",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VestingRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "start_time",
+            "type": "u64"
+          },
+          {
+            "name": "end_time",
+            "type": "u64"
+          },
+          {
+            "name": "periods",
+            "type": "u64"
+          },
+          {
+            "name": "period_duration",
+            "type": "u64"
+          },
+          {
+            "name": "amount_per_period",
+            "type": "u64"
+          },
+          {
+            "name": "storage_pda",
+            "type": "pubkey"
+          },
+          {
+            "name": "claimed_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VestingStorage",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vesting_record",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "SEED",
+      "type": "string",
+      "value": "\"anchor\""
+    },
+    {
+      "name": "VESTING_STORAGE_SEED",
+      "type": "string",
+      "value": "\"vesting_storage\""
+    }
+  ]
+}
